@@ -1,12 +1,18 @@
--- This file can be loaded by calling `lua require('plugins')` from your init.vim
+local fn = vim.fn
+local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+if fn.empty(fn.glob(install_path)) > 0 then
+  Packer_Bootstrap = fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
+  vim.cmd [[packadd packer.nvim]]
+end
 
--- Only required if you have packer configured as `opt`
-vim.cmd [[packadd packer.nvim]]
+local present, packer = pcall(require, "packer")
 
-return require('packer').startup(function(use)
-  -- Packer can manage itself
+if not present then
+	return
+end
+
+packer.startup(function(use)
   use 'wbthomason/packer.nvim'
-
   use {
 	  'nvim-telescope/telescope.nvim', tag = '0.1.5',
 	  -- or                            , branch = '0.1.x',
@@ -14,16 +20,18 @@ return require('packer').startup(function(use)
   }
 
   use {
-	  "loctvl842/monokai-pro.nvim",
-	  as = 'monokai-pro',
-	  config = function()
-		  require("monokai-pro").setup()
-		  vim.cmd('colorscheme monokai-pro') 
-	  end
+      "loctvl842/monokai-pro.nvim",
+      config = function()
+          require("monokai-pro").setup()
+          vim.cmd('colorscheme monokai-pro') 
+      end
   }
   use {
-	  'nvim-treesitter/nvim-treesitter',
-	  run = ':TSUpdate'
+      'nvim-treesitter/nvim-treesitter',
+      run = function()
+          local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+          ts_update()
+      end,
   }
   use('nvim-treesitter/playground')
   use('ThePrimeagen/harpoon')
@@ -31,13 +39,13 @@ return require('packer').startup(function(use)
   use('tpope/vim-fugitive')
   use 'nvim-tree/nvim-web-devicons'
   use {
-	  'VonHeikemen/lsp-zero.nvim',
-	  branch = 'v3.x', 
-	  requires = {
-		  -- LSP Support
-		  {'neovim/nvim-lspconfig'},
-		  {'williamboman/mason.nvim'},
-		  {'williamboman/mason-lspconfig.nvim'},
+      'VonHeikemen/lsp-zero.nvim',
+      branch = 'v3.x', 
+      requires = {
+          -- LSP Support
+          {'neovim/nvim-lspconfig'},
+          {'williamboman/mason.nvim'},
+          {'williamboman/mason-lspconfig.nvim'},
 
 		  -- Autocompletion
 		  {'hrsh7th/nvim-cmp'},
@@ -53,5 +61,7 @@ return require('packer').startup(function(use)
 	  }
   }  
 
-
+  if Packer_Bootstrap then
+    require('packer').sync()
+  end
 end)
