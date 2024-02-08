@@ -55,13 +55,18 @@ packer.startup(function(use)
 		  {'hrsh7th/cmp-nvim-lsp'},
 		  {'hrsh7th/cmp-nvim-lua'},
 
-		  -- Snippets
-		  {'L3MON4D3/LuaSnip'},
-		  {'rafamadriz/friendly-snippets'},
-	  }
+          -- Snippets
+          {'L3MON4D3/LuaSnip'},
+          {'rafamadriz/friendly-snippets'},
+      }
   }  
-
+  use {
+      'numToStr/Comment.nvim',
+      config = function()
+          require('Comment').setup()
+      end
+  }
   if Packer_Bootstrap then
-    require('packer').sync()
+      require('packer').sync()
   end
 end)
