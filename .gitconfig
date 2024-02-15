@@ -5,3 +5,5 @@
 	default = current
 [alias]
 	ac = commit -am
+[core]
+	editor = nvim
