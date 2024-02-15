@@ -1,5 +1,7 @@
 [user]
 	name = Ilir Gusija
-	email = ilirgusija@gmail.com
+	email = 78830837+ilirgusija@users.noreply.github.com
 [push]
 	default = current
+[alias]
+	ac = commit -am
