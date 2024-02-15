@@ -25,3 +25,6 @@ if [ -d ~/.bashrc.d ]; then
 fi
 
 unset rc
+alias cat='bat'
+alias gs='git status'
+alias apple='ssh user3@130.15.101.67'
