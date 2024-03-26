@@ -14,5 +14,3 @@ alias gs='git status'
 alias gp='git push'
 alias gl='git pull'
 
-# ssh
-alias apple='ssh user3@130.15.101.67'
