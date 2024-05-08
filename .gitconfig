@@ -7,3 +7,5 @@
 	ac = commit -am
 [core]
 	editor = nvim
+[pull]
+	rebase = false
