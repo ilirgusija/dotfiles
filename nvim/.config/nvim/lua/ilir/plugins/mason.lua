@@ -13,8 +13,10 @@ return {
 		f.cmd("MasonInstallAll", function()
 			vim.cmd('MasonUpdate')
 			local ensure_installed = {
+                "arduino-language-server",
 				"bash-language-server",
 				"black",
+                "clangd",
 				"clang-format",
                 "eslint-lsp",
                 "eslint-d",

@@ -68,6 +68,11 @@ return {
         vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, border)
         vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, border)
 
+        vim.filetype.add({
+          extension = {
+            tpp = "cpp",
+          },
+        })
         local capabilities
         if presentCmpNvimLsp then
             capabilities = cmp_lsp.default_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -76,9 +81,12 @@ return {
         end
 
         local servers = {
+            arduino_language_server = require("ilir.plugins.lsp.servers.arduino-language-server")(on_attach),
             bashls = require("ilir.plugins.lsp.servers.bashls")(on_attach),
+            clangd = {},
             cssls = require("ilir.plugins.lsp.servers.cssls")(on_attach),
             dockerls = {},
+            gopls = require("ilir.plugins.lsp.servers.gopls")(on_attach),
             html = {},
             jsonls = {},
             lua_ls = require("ilir.plugins.lsp.servers.luals")(on_attach),
@@ -86,7 +94,7 @@ return {
             rust_analyzer = {},
             tailwindcss = {},
             tflint = {},
-            tsserver = require("ilir.plugins.lsp.servers.tsserver")(on_attach),
+            ts_ls = require("ilir.plugins.lsp.servers.ts_ls")(on_attach),
             yamlls = {},
         }
 

@@ -8,18 +8,21 @@ return {
 			history = true,
 			updateevents = "TextChanged,TextChangedI",
 			enable_autosnippets = true,
+              -- Use Tab (or some other key if you prefer) to trigger visual selection
+            store_selection_keys = "<Tab>",
 		})
 		-- add vscode exported completions
-    require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip.loaders.from_lua").lazy_load({paths = "~/.config/nvim/lua/luasnippets"})
 		local r = require("utils.remaps")
 
-		r.map({ "i", "s" }, "<c-n>", function()
+		r.map({ "i", "s" }, "<Tab>", function()
 			if luasnip.expand_or_jumpable() then
 				luasnip.expand_or_jump()
 			end
 		end, "Expand current snippet or jump to next", { silent = true })
 
-		r.map({ "i", "s" }, "<c-p>", function()
+		r.map({ "i", "s" }, "<S-Tab>", function()
 			if luasnip.jumpable(-1) then
 				luasnip.jump(-1)
 			end
