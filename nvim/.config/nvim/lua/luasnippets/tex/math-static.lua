@@ -101,11 +101,11 @@ M = {
 
 	autosnippet({ trig = "lim", name = "lim(sup|inf)", dscr = "lim(sup|inf)" },
     fmta([[ 
-    \lim<><><>
+    \lim<><> <>
     ]],
-	{c(1, { t(""), t("sup"), t("inf") }),
-	c(2, { t(""), fmta([[_{<> \to <>}]], { i(1, "n"), i(2, "\\infty") }) }),
-	i(0)}),
+	{c(1, { t(""), t("sup"), t("inf")  }),
+	 c(2, {fmta([[_{<> \to <>}]], { i(1, "n"), i(2, "\\infty") }), t("") }), 
+	 i(0) }),
 	{ condition = tex.in_math, show_condition = tex.in_math }),
 
 	autosnippet({ trig = "sum", name = "summation", dscr = "summation" },
@@ -113,6 +113,14 @@ M = {
     \sum<> <>
     ]],
     { c(1, {fmta([[_{<>}^{<>}]], {i(1, "i = 0"), i(2, "\\infty")}), t("")}), i(0) }),
+    { condition = tex.in_math, show_condition = tex.in_math }),
+
+	autosnippet({ trig = "int", name = "integral", dscr = "integration" },
+	fmta([[
+    \int\limits<> <>
+    ]],
+    { c(1, {fmta([[_{<>}]], {i(1, "\\mathbb{X}")}), t("")}), 
+	i(0) }),
     { condition = tex.in_math, show_condition = tex.in_math }),
 
 	autosnippet({ trig = "prod", name = "product", dscr = "product" },
@@ -131,14 +139,14 @@ M = {
 
 	autosnippet({ trig = "set", name = "set", dscr = "set" }, -- overload with set builders notation because analysis and algebra cannot agree on a singular notation
 	fmta([[
-    \{<>\}<>
+    \{ <> \} <>
     ]],
 	{ c(1, { r(1, ""), sn(nil, { r(1, ""), t(" \\mid "), i(2) }), sn(nil, { r(1, ""), t(" \\colon "), i(2) })}), i(0) }),
 	{ condition = tex.in_math, show_condition = tex.in_math }),
 
     autosnippet({ trig = "norm", name = "norm", dscr = "norm" }, -- overload with set builders notation because analysis and algebra cannot agree on a singular notation
 	fmta([[
-    \lVert<>\rVert<>
+    \lVert <> \rVert <>
     ]],
 	{ c(1, { r(1, ""), sn(nil, { r(1, ""), t(" \\mid "), i(2) }), sn(nil, { r(1, ""), t(" \\colon "), i(2) })}), i(0) }),
 	{ condition = tex.in_math, show_condition = tex.in_math }),
@@ -174,6 +182,7 @@ M = {
 
 -- Auto backslashes
 local auto_backslash_specs = {
+    "mid",
 	"arcsin",
 	"sin",
 	"arccos",
@@ -198,11 +207,15 @@ local auto_backslash_specs = {
 	"argmin",
     "deg",
     "angle",
+	"tau",
+	"pi",
+	"eta",
+	"psi"
 }
 
 local auto_backslash_snippets = {}
 for _, v in ipairs(auto_backslash_specs) do
-    table.insert(auto_backslash_snippets, auto_backslash_snippet({ trig = v }, { condition = tex.in_math }))
+    table.insert(auto_backslash_snippets, auto_backslash_snippet({ trig = v }, { condition = tex.in_math, backslash=true }))
 end
 vim.list_extend(M, auto_backslash_snippets)
 
@@ -215,37 +228,37 @@ local greek_specs = {
     ['@d'] = { context = { name = "δ" }, command = [[\delta]] },
     ['@D'] = { context = { name = "Δ" }, command = [[\Delta]] },
     ['@e'] = { context = { name = "ε" , priority = 500 }, command = [[\epsilon]] },
-    veps = { context = { name = "ε" }, command = [[\varepsilon]] },
     ['@z'] = { context = { name = "ζ" }, command = [[\zeta]] },
-	eta = { context = { name = "η" , priority = 500}, command = [[\eta]] },
     ['@t']  = { context = { name = "θ" }, command = [[\theta]] },
     ["@T"]  = { context = { name = "Θ" }, command = [[\Theta]] },
-	iota = { context = { name = "ι" }, command = [[\iota]] },
+	["@i"] = { context = { name = "ι" }, command = [[\iota]] },
     ["@k"] = { context = { name = "κ" }, command = [[\kappa]] },
     ["@l"] = { context = { name = "λ" }, command = [[\lambda]] },
     ["@L"] = { context = { name = "Λ" }, command = [[\Lambda]] },
     ["@m"] = { context = { name = "μ" }, command = [[\mu]] },
     ["@n"] = { context = { name = "ν" }, command = [[\nu]] },
-    xi = { context = { name = "ξ" }, command = [[\xi]] },
-	pi = { context = { name = "π" }, command = [[\pi]] },
+    ["@x"] = { context = { name = "ξ" }, command = [[\xi]] },
     ["@r"] = { context = { name = "ρ" }, command = [[\rho]] },
     ["@s"] = { context = { name = "σ" }, command = [[\sigma]] },
     ["@S"] = { context = { name = "Σ" }, command = [[\Sigma]] },
-    tau = { context = { name = "τ" }, command = [[\tau]] },
-	ups = { context = { name = "υ" }, command = [[\upsilon]] },
+	["@u"] = { context = { name = "υ" }, command = [[\upsilon]] },
     ["@p"] = { context = { name = "φ" }, command = [[\phi]] },
-    vphi = { context = { name = "φ" }, command = [[\varphi]] },
-    chi = { context = { name = "χ" }, command = [[\chi]] },
-	psi = { context = { name = "Ψ" }, command = [[\psi]] },
+	["@P"] = { context = { name = "φ" }, command = [[\Phi]] },
+    ["@c"] = { context = { name = "χ" }, command = [[\chi]] },
     ["@o"] = { context = { name = "ω" }, command = [[\omega]] },
     ["@O"] = { context = { name = "Ω" }, command = [[\Omega]] },
+	veps = { context = { name = "ε" }, command = [[\varepsilon]] },
+    vphi = { context = { name = "φ" }, command = [[\varphi]] },
+	-- tau = { context = { name = "τ" }, command = [[\tau]] },
+	-- pi = { context = { name = "π" }, command = [[\pi]] },
+	-- eta = { context = { name = "η" , priority = 500}, command = [[\eta]] },
+	-- psi = { context = { name = "Ψ" }, command = [[\psi]] },
 }
-
 local greek_snippets = {}
 for k, v in pairs(greek_specs) do
 	table.insert(
 		greek_snippets,
-		symbol_snippet(vim.tbl_deep_extend("keep", { trig = k }, v.context), v.command, { condition = tex.in_math, backslash = true })
+		symbol_snippet(vim.tbl_deep_extend("keep", { trig = k }, v.context), v.command, { condition = tex.in_math })
 	)
 end
 vim.list_extend(M, greek_snippets)
@@ -261,9 +274,11 @@ local symbol_specs = {
 	["~="] = { context = { name = "≈" }, command = [[\approx]] },
 	["~-"] = { context = { name = "≃" }, command = [[\simeq]] },
 	["-~"] = { context = { name = "⋍" }, command = [[\backsimeq]] },
-	["-="] = { context = { name = "≡" }, command = [[\equiv]] },
+	["==="] = { context = { name = "≡" }, command = [[\equiv]] },
+	del = { context = { name = "∇" }, command = [[\nabla]] },
+	nabl = { context = { name = "∇" }, command = [[\nabla]] },
 	["=~"] = { context = { name = "≅" }, command = [[\cong]] },
-	[":="] = { context = { name = "≔" }, command = [[\definedas]] },
+	[":="] = { context = { name = "≔" }, command = [[\coloneq]] },
 	["**"] = { context = { name = "·", priority = 100 }, command = [[\cdot]] },
 	xx = { context = { name = "×" }, command = [[\times]] },
 	["!+"] = { context = { name = "⊕" }, command = [[\oplus]] },
@@ -275,7 +290,7 @@ local symbol_specs = {
 	RR = { context = { name = "ℝ" }, command = [[\mathbb{R}]] },
 	CC = { context = { name = "ℂ" }, command = [[\mathbb{C}]] },
 	FF = { context = { name = "ℂ" }, command = [[\mathbb{F}]] },
-	OO = { context = { name = "∅" }, command = [[\emptyset]] },
+	eset = { context = { name = "∅" }, command = [[\emptyset]] },
 	pwr = { context = { name = "P" }, command = [[\powerset]] },
 	cc = { context = { name = "⊂" }, command = [[\subset]] },
 	cq = { context = { name = "⊆" }, command = [[\subseteq]] },
@@ -315,7 +330,6 @@ local symbol_specs = {
 	["+-"] = { context = { name = "†" }, command = [[\pm]] },
 	["-+"] = { context = { name = "†" }, command = [[\mp]] },
 }
-
 local symbol_snippets = {}
 for k, v in pairs(symbol_specs) do
 	table.insert(
@@ -361,7 +375,7 @@ local single_command_math_specs = {
 		},
 		command = [[\overline]],
 	},
-	["__"] = {
+	["_"] = {
 		context = {
 			name = "subscript",
 			dscr = "auto subscript 3",
@@ -369,7 +383,7 @@ local single_command_math_specs = {
 		},
 		command = [[_]],
 	},
-	td = {
+	["^"] = {
 		context = {
 			name = "superscript",
 			dscr = "auto superscript alt",
@@ -392,8 +406,42 @@ local single_command_math_specs = {
 		command = [[\sqrt]],
 		ext = { choice = true },
 	},
+	bf = {
+        context = {
+            name = "mathbf",
+            dscr =  "math bold",
+        },
+        command = [[\mathbf]]
+    },
+    mbb = {
+        context = {
+            name = "mathbb",
+            dscr =  "math blackboard bold",
+        },
+        command = [[\mathbb]]
+    },
+    mcal = {
+        context = {
+            name = "mathcal",
+            dscr =  "math calligraphic",
+        },
+        command = [[\mathcal]]
+    },
+    mscr = {
+        context = {
+            name = "mathscr",
+            dscr =  "math script",
+        },
+        command = [[\mathscr]]
+    },
+    mfr = {
+        context = {
+            name = "mathfrak",
+            dscr =  "mathfrak",
+        },
+        command = [[\mathfrak]]
+    },
 }
-
 local single_command_math_snippets = {}
 for k, v in pairs(single_command_math_specs) do
 	table.insert(
@@ -409,57 +457,7 @@ end
 vim.list_extend(M, single_command_math_snippets)
 
 local postfix_math_specs = {
-    bf = {
-        context = {
-            name = "mathbf",
-            dscr =  "math bold",
-        },
-        command = {
-            pre = [[\mathbf{]],
-            post = [[}]],
-        }
-    },
-    mbb = {
-        context = {
-            name = "mathbb",
-            dscr =  "math blackboard bold",
-        },
-        command = {
-            pre = [[\mathbb{]],
-            post = [[}]],
-        }
-    },
-    mcal = {
-        context = {
-            name = "mathcal",
-            dscr =  "math calligraphic",
-        },
-        command = {
-            pre = [[\mathcal{]],
-            post = [[}]],
-        }
-    },
-    mscr = {
-        context = {
-            name = "mathscr",
-            dscr =  "math script",
-        },
-        command = {
-            pre = [[\mathscr{]],
-            post = [[}]],
-        },
-    },
-    mfr = {
-        context = {
-            name = "mathfrak",
-            dscr =  "mathfrak",
-        },
-        command = {
-            pre = [[\mathfrak{]],
-            post = [[}]],
-        },
-    },
-    hat = {
+    hatt = {
 		context = {
 			name = "hat",
 			dscr = "hat",

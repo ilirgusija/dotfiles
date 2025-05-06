@@ -9,3 +9,5 @@
 	editor = nvim
 [pull]
 	rebase = false
+[init]
+	defaultBranch = trunk

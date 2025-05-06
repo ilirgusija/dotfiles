@@ -60,43 +60,52 @@ end
 
 -- Auto backslash - thanks kunzaatko! (ref: https://github.com/kunzaatko/nvim-dots/blob/trunk/lua/snippets/tex/utils/snippet_templates.lua)
 M.auto_backslash_snippet = function(context, opts)
-	opts = opts or {}
-	if not context.trig then
-		error("context doesn't include a `trig` key which is mandatory", 2)
-	end
-	context.dscr = context.dscr or (context.trig .. "with automatic backslash")
-	context.name = context.name or context.trig
-	context.docstring = context.docstring or ([[\]] .. context.trig)
-    context.trigEngine = "ecma"
-    context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-	return autosnippet(context,
+    opts = opts or {}
+    if not context.trig then
+        error("context doesn't include a `trig` key which is mandatory", 2)
+    end
+    context.dscr = context.dscr or (context.trig .. " with automatic backslash")
+    context.name = context.name or context.trig
+    context.docstring = context.docstring or ([[\]] .. context.trig)
+    context.trigEngine = "pattern"  -- Changed from "ecma" to "pattern"
+    context.trig = "([^\\])" .. context.trig  -- Changed pattern to capture non-backslash
+    return autosnippet(context,
     fmta([[
-    \<><>
+    <>\<> <>
     ]],
-    { f(function(_, snip)
+    { f(function(_, snip)  -- Add the captured character back
         return snip.captures[1]
     end),
+    t(context.name),  -- Use the original trigger name instead
     i(0) }),
     opts)
 end
 
 -- Auto symbol
 M.symbol_snippet = function(context, command, opts)
-	opts = opts or {}
-	if not context.trig then
-		error("context doesn't include a `trig` key which is mandatory", 2)
-	end
-	context.dscr = context.dscr or command
-	context.name = context.name or command:gsub([[\]], "")
-	context.docstring = context.docstring or (command .. [[{0}]])
-	context.wordTrig = context.wordTrig or false
+    opts = opts or {}
+    if not context.trig then
+        error("context doesn't include a `trig` key which is mandatory", 2)
+    end
+    context.dscr = context.dscr or command
+    context.name = context.name or command:gsub([[\]], "")
+    context.docstring = context.docstring or (command .. [[{0}]])
+    context.wordTrig = context.wordTrig or false
     j, _ = string.find(command, context.trig)
     if j == 2 then -- command always starts with backslash
-        context.trigEngine = "ecma"
-        context.trig = "(?<!\\\\)" .. "(" .. context.trig .. ")"
-        context.hidden = true
+        context.trigEngine = "pattern"
+        context.trig = "([^\\])" .. context.trig
     end
-	return autosnippet(context, t(command), opts)
+    return autosnippet(context,
+    fmta([[
+    <><> <>
+    ]],
+    { f(function(_, snip)
+        return snip.captures and snip.captures[1] or ""
+    end),
+    t(command),
+    i(0) }),
+    opts)
 end
 
 -- single command with option

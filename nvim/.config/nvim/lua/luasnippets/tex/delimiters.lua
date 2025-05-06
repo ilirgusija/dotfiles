@@ -37,12 +37,11 @@ local scaffolding = require("luasnippets.tex.utils.scaffolding")
 
 -- brackets
 local brackets = {
-	a = { "\\langle", "\\rangle" },
+	i = { "\\langle", "\\rangle" },
 	A = { "Angle", "Angle" },
-	b = { "brack", "brack" },
-	B = { "Brack", "Brack" },
-    c = { "\\{", "\\}" },
-	m = { "|", "|" },
+	b = { "[", "]" },
+    B = { "\\{", "\\}" },
+	a = { "|", "|" },
 	p = { "(", ")" },
 }
 
